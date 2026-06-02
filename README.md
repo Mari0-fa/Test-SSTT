@@ -13,10 +13,11 @@ Plataforma web adaptativa para el entrenamiento y simulación de exámenes tipo 
 - **Fallo:** -0.50 puntos (Dos respuestas incorrectas anulan una correcta).
 - **En Blanco:** 0.00 puntos (Actúa como escudo defensivo, no resta).
 
-## 🚀 Despliegue rápido
-Para ejecutar en local con entorno virtual:
-```bash
-python -m venv venv
-.\venv\Scripts\activate
-pip install flask
-python app.py
+## 🚀 Despliegue y Acceso Rápido
+
+### 🌐 Acceso en Producción
+Si quieres probar la aplicación al instante sin instalar nada, está desplegada de forma pública en el siguiente enlace:
+👉 **[Visitar Turbo Test Pro](https://mari0.pythonanywhere.com/)**
+
+
+
