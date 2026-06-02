@@ -1,0 +1,167 @@
+PREGUNTA: ¿A qué nos referimos con confidencialidad de una comunicación?
+A) Solamente el emisor y el receptor designado deberían poder leer el contenido del mensaje.
+B) El emisor cifra el mensaje y el receptor lo descifra.
+C) Ambas son correctas.
+RESPUESTA: C
+EXPLICACION: La confidencialidad se aborda desde dos vertientes complementarias: el objetivo teórico (que la información solo sea accesible para las partes autorizadas) y la implementación técnica en redes (el proceso de cifrado por el emisor y descifrado por el receptor).
+ERRORES: A) Es incompleta por sí sola porque ignora el mecanismo técnico de aplicación. B) Es incompleta porque solo menciona la herramienta matemática sin atender al propósito final de privacidad.
+
+PREGUNTA: ¿A qué nos referimos con autenticación de una comunicación?
+A) Se trata de una propiedad de seguridad que permite verificar la identidad del emisor y del receptor.
+B) Se trata de una propiedad que permite cifrar las comunicaciones en curso.
+C) Se trata de una propiedad que permite tener disponible y accesible la información.
+RESPUESTA: A
+EXPLICACION: La esencia de la autenticación es la constatación de la identidad. Asegura de manera inequívoca que las entidades que participan en el intercambio de datos son verdaderamente quienes afirman ser, evitando suplantaciones.
+ERRORES: B) Esa función pertenece exclusivamente a la Confidencialidad. C) Esa es la definición exacta de la Disponibilidad.
+
+PREGUNTA: ¿A qué nos referimos con integridad de los mensajes intercambiados en una comunicación?
+A) Se trata de una propiedad de seguridad que evita que un atacante conozca la información intercambiada.
+B) Se trata de una propiedad de seguridad que permite al receptor de un mensaje saber si éste ha sido modificado respecto al original.
+C) Se trata de una propiedad que asegura la identidad de emisor y receptor.
+RESPUESTA: B
+EXPLICACION: La integridad garantiza que los datos permanezcan inalterados desde su emisión hasta su recepción, dotando al sistema de herramientas (como funciones de hash) para alertar al receptor si ocurrió cualquier cambio.
+ERRORES: A) Evitar el conocimiento de la información por terceros es la meta de la Confidencialidad. C) Asegurar la identidad de las partes es la función de la Autenticación.
+
+PREGUNTA: En la criptografía simétrica Alice tiene una clave Ka y Bob tiene una clave Kb, ¿qué opción es cierta?
+A) El valor de la clave Ka es igual al valor de la clave Kb
+B) El valor de la clave Ka es diferente al valor de la clave Kb
+C) Alice le envía Ka a Bob y Bob le envía Kb a Alice
+RESPUESTA: A
+EXPLICACION: La definición estricta de criptografía simétrica exige la existencia de una única clave compartida y secreta entre ambas partes. De este modo, la llave matemática para cifrar es idéntica a la que se requiere para descifrar (Ka = Kb).
+ERRORES: B) La existencia de claves diferentes define a la criptografía asimétrica. C) Transmitir las claves simétricas en claro a través de un canal inseguro comprometería por completo la seguridad del sistema.
+
+PREGUNTA: En el cifrado de sustitución monoalfabético, cada letra del mensaje en claro se reemplaza por...
+A) Otra letra fija determinada por una clave.
+B) Un número aleatorio generado en el momento.
+C) Un símbolo basado en una función hash.
+RESPUESTA: A
+EXPLICACION: Un sistema monoalfabético opera bajo una equivalencia estática de 1 a 1. La clave define un alfabeto alternativo único, lo que significa que un carácter siempre se sustituirá por el mismo carácter fijo en cualquier posición del mensaje.
+ERRORES: B) Un valor aleatorio destruiría la naturaleza determinista del algoritmo, haciendo imposible descifrarlo. C) Las funciones hash producen resúmenes unidireccionales de integridad, no caracteres individuales de sustitución reversible.
+
+PREGUNTA: En un cifrador de flujo es CIERTO que:
+A) Utiliza una clave compartida tan grande como el texto a cifrar.
+B) Utiliza una secuencia cifrante tan larga como el texto a cifrar, obtenida de un generador determinista que tiene como entrada una clave compartida.
+C) La secuencia cifrante es distinta para emisor y receptor.
+RESPUESTA: B
+EXPLICACION: Los stream ciphers toman una clave inicial secreta y corta y, por medio de un generador determinista pseudoaleatorio, la expanden en un flujo continuo de bits (keystream) cuya extensión coincide exactamente con el tamaño del mensaje.
+ERRORES: A) Describe al cifrado teórico One-Time Pad, donde lo que mide igual que el texto es la propia clave real, no una secuencia generada. C) Si las secuencias fuesen distintas, la operación matemática (XOR) no podría revertirse para recuperar el texto claro.
+
+PREGUNTA: Sobre el cifrado de bloques aplicado a un mensaje M, indica la sentencia VERDADERA:
+A) Es necesaria una clave de cifrado de la misma longitud que el mensaje M.
+B) La longitud de los bloques de datos que forman M pueden variar en cada iteración.
+C) Un bloque Mi ya cifrado (Ci) puede usarse como parte de la información para proteger el siguiente bloque (Mi+1), por ejemplo, aplicando un XOR.
+RESPUESTA: C
+EXPLICACION: Esto describe el modo de operación CBC (Cipher Block Chaining). Para evitar que bloques idénticos de texto claro produzcan bloques idénticos de texto cifrado, el resultado cifrado previo (Ci) se combina mediante un XOR con el texto claro actual antes de ser procesado.
+ERRORES: A) Los algoritmos de bloque operan con claves estandarizadas de tamaño fijo (ej. 128 bits en AES) independientes del mensaje. B) Un cifrador de bloque exige trabajar con fragmentos de datos de longitud constante; si el bloque final es menor, se le aplica un padding obligatorio.
+
+PREGUNTA: ¿Cómo se mejora la seguridad del DES mediante 3DES?
+A) Usando tres claves diferentes y aplicando DES tres veces.
+B) Incrementando el tamaño de la clave a 512 bits.
+C) Cifrando solo la mitad del mensaje y dejando la otra sin cifrar.
+RESPUESTA: A
+EXPLICACION: El Triple DES extiende la robustez del obsoleto DES mediante una ejecución secuencial en cascada. Realiza tres operaciones sucesivas (típicamente Cifrar-Descifrar-Cifrar) empleando tres llaves distintas de 56 bits cada una.
+ERRORES: B) El tamaño total acumulado de las claves en 3DES alcanza como máximo los 168 bits (56 bits x 3). C) Dejar expuesto el 50% de la información sin cifrar anularía de inmediato la confidencialidad.
+
+PREGUNTA: ¿Cómo se deriva cada subclave en las rondas de DES?
+A) A partir de una clave maestra de 56 bits, mediante permutaciones y desplazamientos circulares.
+B) Generando una nueva clave aleatoria en cada ronda.
+C) Dividiendo la clave original en bloques de 8 bits y usándolos secuencialmente.
+RESPUESTA: A
+EXPLICACION: En el Key Schedule de DES, la clave maestra original de 56 bits útiles se fracciona en dos partes que experimentan rotaciones hacia la izquierda y pasan por una permutación de compresión (PC-2) para moldear la subclave de 48 bits de cada ronda.
+ERRORES: B) Valores aleatorios independientes impedirían que el destinatario simétrico dedujera las mismas subclaves para descifrar. C) Una segmentación lineal de bytes aislados sería extremadamente débil frente a criptoanálisis.
+
+PREGUNTA: Sea Ka+ la clave pública de Alice, Ka- la clave privada asociada y Kx() una función de cifrado asimétrico con la clave Kx. Indica la sentencia FALSA.
+A) Ka-(Ka+(m)) = c, donde c es un criptograma
+B) Ka-(Ka+(m)) = m, donde m es un plaintext
+C) Ka-(Ka+(m)) = Ka+(Ka-(m))
+RESPUESTA: A
+EXPLICACION: Las claves pública y privada forman un par complementario inverso. Si aplicamos la clave pública Ka+ a un mensaje m obtenemos un criptograma, pero al aplicar inmediatamente la clave privada Ka-, el proceso se revierte devolviendo el texto plano original (m o plaintext), no otro criptograma c.
+ERRORES: B) Es una sentencia verdadera que describe el proceso estándar de confidencialidad. C) Es una sentencia verdadera que demuestra la conmutatividad matemática de RSA (el lado izquierdo descifra para confidencialidad y el derecho verifica una firma, ambos dan m).
+
+PREGUNTA: Si Bob recibe un mensaje m cifrado con la clave privada de Alice (Kpriv-A), Bob puede asegurar:
+A) Que el mensaje realmente lo ha enviado Alice.
+B) Que sólo él podrá ver el mensaje que le ha enviado Alice.
+C) Que sólo él podrá ver el mensaje que le ha enviado Alice y que realmente viene de Alice.
+RESPUESTA: A
+EXPLICACION: La clave privada de Alice es secreta y exclusiva de ella. Si Bob puede descifrar el mensaje con la clave pública de Alice (Kpub-A), queda demostrado que solo pudo firmarse con la clave privada correspondiente, garantizando la autenticidad y el no repudio.
+ERRORES: B) Cualquier usuario de la red que disponga de la clave pública de Alice (que es de acceso general) puede descifrar el mensaje, por lo que no hay confidencialidad. C) Falla en la primera parte por el mismo motivo; el mensaje no es secreto para Bob.
+
+PREGUNTA: El uso práctico de cifrado de un mensaje m con RSA se limita a ... (indica la sentencia VERDADERA)
+A) Alice cifra el mensaje m para Bob usando su clave pública (la de Alice), solo Bob puede descifrarlo con la privada (la de Bob)
+B) Alice genera una clave de sesión simétrica (Ks), Alice cifra el m con Ks y Ks con la clave pública de Bob. Solo Bob puede descifrar Ks y por tanto, obtener m
+C) Alice cifra el mensaje m para Bob usando una clave simétrica Ks que Bob le envía previamente protegida con la clave privada de Bob.
+RESPUESTA: B
+EXPLICACION: RSA es computacionalmente lento para grandes volúmenes de datos. Se utiliza criptografía híbrida: se genera una clave simétrica temporal (Ks) para cifrar el cuerpo del mensaje eficientemente, y se usa RSA únicamente para cifrar la pequeña clave Ks con la pública de Bob.
+ERRORES: A) Si Alice cifra con su propia clave pública, solo la clave privada de Alice podrá abrirlo; Bob no podría descifrarlo con la suya. C) Si Bob enviara Ks cifrada con su privada, cualquiera con su pública la interceptaría, rompiendo el secreto de la sesión.
+
+PREGUNTA: Con respecto a Diffie-Hellman es CIERTO que:
+A) Se trata de un algoritmo de distribución de claves simétricas basado en criptografía asimétrica que autentica al emisor y el receptor.
+B) Se trata de un algoritmo de distribución de claves simétricas basado en criptografía asimétrica que no autentica al emisor y el receptor, y por tanto es vulnerable al ataque man-in-the-middle
+C) Se trata de un algoritmo de distribución de claves basado en criptografía simétrica que autentica al emisor y el receptor.
+RESPUESTA: B
+EXPLICACION: El protocolo Diffie-Hellman original permite acordar una clave simétrica sobre un canal inseguro empleando matemáticas asimétricas, pero en su diseño base es anónimo (no incluye firmas ni certificados). Al carecer de autenticación nativa, es vulnerable a ataques de interceptación Man-In-The-Middle.
+ERRORES: A) El algoritmo puro no autentica las identidades de los participantes. C) No parte de una base simétrica previa, se fundamenta en las propiedades de clave pública (logaritmo discreto).
+
+PREGUNTA: Supongamos que Alice y Bob quieren intercambiar un mensaje M protegido con una clave k derivada con DH. Alice elige el número primo q y g como raíz primitiva de q. Es CIERTO que....
+A) Bob tiene que generar sus propios valores q' y g' para poder comunicarse con Alice.
+B) Bob debe recibir la clave pública de Alice Ya = g^Xa mod q para derivar k (g y q se pueden enviar en claro) y luego usar la clave k para cifrarla.
+C) Alice envía M cifrado calculando c=M^Xb mod q
+RESPUESTA: B
+EXPLICACION: Los parámetros globales q y g son públicos y comunes. Alice calcula su clave pública Ya y se la pasa a Bob. Bob toma Ya y, junto con su clave privada secreta Xb, deduce de forma independiente la misma clave simétrica compartida k para proteger el mensaje M.
+ERRORES: A) Si operaran sobre cuerpos matemáticos diferentes con q y g distintos, las ecuaciones finales no coincidirían y no consolidarían la misma clave k. C) Alice no conoce Xb porque es la clave privada secreta de Bob. Además, DH acuerda claves, no cifra texto directamente.
+
+PREGUNTA: Si h es el resultado de aplicar una función de resumen digital H a un mensaje. ¿Puede un atacante que conozca h y H obtener M?
+A) Sí, porque conoce el detalle de la función hash.
+B) NO, siempre que la función H sea robusta.
+C) SI, aplicando H de modo inverso.
+RESPUESTA: B
+EXPLICACION: Una propiedad fundamental de los hashes es la resistencia a la preimagen (unidireccionalidad). Debe ser inviable revertir el proceso para hallar M a partir de su resumen h. Que sea "robusta" implica que carece de debilidades de diseño para romper esta propiedad.
+ERRORES: A) Los algoritmos de hash son públicos; su seguridad reside en la complejidad matemática de la unidireccionalidad, no en el secreto del algoritmo. C) Las funciones hash no tienen inversa matemática; al comprimir y compactar datos fijos se pierde información en el proceso.
+
+PREGUNTA: En cuanto a dotar de integridad a los mensajes con un Message Authentication Code (MAC) de un mensaje M:
+A) H(M+k) es un MAC donde k es una clave pública del que genera el MAC.
+B) H(M+k) es un MAC donde k es una clave privada del que genera el MAC.
+C) H(M+k) es un MAC donde k es la clave simétrica del que genera el MAC y que comparte la clave con el receptor.
+RESPUESTA: C
+EXPLICACION: Un MAC se basa en criptografía simétrica. Asegura que el mensaje no cambió (integridad) y que el origen es legítimo (autenticidad), ya que el receptor necesita emplear la misma función hash con la misma clave secreta compartida k para validar la firma.
+ERRORES: A) Si la clave fuera pública, cualquiera falsificaría el MAC de un mensaje alterado, perdiendo la propiedad de autenticación. B) Esto describe el concepto de Firma Digital (criptografía asimétrica); el término MAC se reserva para esquemas de clave secreta compartida.
+
+PREGUNTA: Supongamos que Alice envía a Bob un mensaje M firmado digitalmente. Es CIERTO que:
+A) Nadie, excepto Alice y Bob podrán ver el contenido del mensaje porque va protegido.
+B) Cualquiera que reciba el mensaje podrá ver su contenido.
+C) Alice protegió el mensaje usando la clave pública de Bob.
+RESPUESTA: B
+EXPLICACION: Una firma digital por sí sola garantiza autenticidad, integridad y no repudio, pero no confidencialidad. El mensaje M viaja en claro junto al bloque de la firma (el hash cifrado con la privada de Alice). Cualquier interceptor puede leer M a menos que se aplique un proceso de cifrado adicional.
+ERRORES: A) Solo sería cierto si el mensaje estuviera cifrado. Al estar solo firmado, carece de privacidad. C) En una firma digital, Alice usa su propia clave privada para generar el sello de autoría, no la clave de Bob.
+
+PREGUNTA: Si Bob recibe un mensaje m de Alice, y una firma digital (FD) asimétrica, ¿Cómo Bob comprobaría que es CORRECTA?
+A) Bob hace un hash de m, H(m) = h. Se obtiene la clave pública de Bob KpubB y se hace una operación de descifrado KpubB(FD)=h'. Si h' = h la firma digital está verificada.
+B) Bob hace un hash de m, H(m) = h. Se obtiene la clave pública de Alice KpubA y se hace una operación de descifrado KpubA(FD)=h'. Si h' = h la firma digital está verificada.
+C) Bob hace un hash de m, H(m) = h. Bob usa su clave privada KprivB y hace una operación de descifrado KprivB(FD)=h'. Si h' = h la firma digital está verificada.
+RESPUESTA: B
+EXPLICACION: Para verificar la firma, el receptor (Bob) calcula su propio hash h del mensaje m. Paralelamente, usa la clave pública de la emisora (Alice) para abrir la firma y recuperar el hash original h'. Si coinciden (h' = h), se valida que el mensaje no cambió y que pertenece a Alice.
+ERRORES: A) La clave pública de Bob sirve para enviarle datos confidenciales a él, no para validar la firma de Alice. C) La clave privada de Bob es secreta de él y no guarda ninguna relación matemática con la firma generada por Alice.
+
+PREGUNTA: Supongamos que Bob envía un mensaje M cifrado digitalmente a Alice. Para la operación criptográfica Bob ha usado el certificado X.509 de Alice. Selecciona la respuesta VERDADERA:
+A) Alice puede descifrar el mensaje usando la clave pública contenida en el certificado X.509 de Bob.
+B) Para cifrar el mensaje, Bob usó la clave privada de Alice incluida en su certificado X.509.
+C) Alice descifrará el mensaje usando su clave privada asociada a la pública que va incluida en su certificado X.509.
+RESPUESTA: C
+EXPLICACION: El certificado X.509 vincula una identidad con su clave pública de forma fidedigna. Para enviar un mensaje confidencial a Alice, Bob cifra los datos con la clave pública de ella. Siguiendo las reglas asimétricas, solo la clave privada correspondiente (en posesión exclusiva de Alice) podrá revertir el proceso.
+ERRORES: A) La pública de Bob solo sirve para verificar firmas hechas por él, no para descifrar correspondencia dirigida a Alice. B) Las claves privadas son secretas y jamás se incluyen en los certificados, que son documentos de acceso público.
+
+PREGUNTA: En relación con el concepto de certificado digital X.509. Indica qué información NO va contenida en un certificado digital de cliente:
+A) Nombre común (CN) correspondiente a un servicio web.
+B) Clave pública perteneciente al cliente.
+C) Nombre de la CA que lo emite.
+RESPUESTA: A
+EXPLICACION: El Common Name (CN) en un certificado de cliente identifica al usuario final o empleado. Un CN asociado a un dominio o servicio web (ej: www.ejemplo.com) pertenece estrictamente a las credenciales de un certificado de servidor.
+ERRORES: B) Esta información sí está presente; el propósito de un X.509 es precisamente publicar la clave pública de su titular de forma segura. C) Esta información sí está presente; es obligatoria para poder verificar la firma de la entidad emisora y validar la cadena de confianza.
+
+PREGUNTA: Supongamos que la Autoridad de Certificación CA1 (x509ca) ha emitido los certificados de identidad para Alice (x509a) y Bob (x509b). Selecciona la respuesta VERDADERA:
+A) x509ca ha sido firmado por la clave privada asociada a x509a.
+B) x509a ha sido firmado por la clave privada asociada a x509ca.
+C) x509a y x509b comparten la misma clave pública, al ser ambos firmados por X509ca.
+RESPUESTA: B
+EXPLICACION: En la infraestructura PKI, la CA actúa como el tercero de confianza que avala a los subordinados. El documento x509a de Alice es sellado y firmado usando la clave privada de la CA (x509ca), permitiendo que cualquiera que tenga la pública de la CA valide la legitimidad del certificado del usuario.
+ERRORES: A) El usuario común no firma digitalmente el certificado de la jerarquía superior. C) Cada certificado aloja un par de claves único y secreto de su titular; si compartieran la clave pública, la confidencialidad se rompería y Bob podría suplantar o leer los mensajes de Alice.

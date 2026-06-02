@@ -1,0 +1,119 @@
+PREGUNTA: En DNS, siguiendo el formato de RR (name, type, value, ttl), ¿cuál es el formato correcto para un registro que indica cuál es el servidor de correo del dominio example.com?
+A) (.example.com., MX , 192.168.56.102, 64)
+B) (.example.com., MX , smtp.example.com., 64)
+C) (smtp.example.com. MX, pop.example.com, 64)
+RESPUESTA: B
+EXPLICACION: El protocolo DNS define que el campo value de un registro MX debe ser un nombre de dominio (FQDN) y no una dirección IP. El campo name debe corresponder al dominio principal (.example.com.).
+ERRORES: A) Introduce una IP directamente en el valor del registro MX, lo cual viola la sintaxis (las IPs se asocian mediante registros A). C) Sitúa el nombre del servidor en el campo name en lugar del dominio general.
+
+PREGUNTA: Sobre el registro MX en DNS para el dominio "um.es". Indica la sentencia VERDADERA:
+A) Debe indicar el nombre de máquina donde se aloja el servicio SMTP de "um.es".
+B) Sólo los servidores SMTP externos que quieren enviar correos a "um.es" consultan este registro.
+C) Ambas son ciertas.
+RESPUESTA: C
+EXPLICACION: El registro MX mapea el dominio con el nombre del host que corre el servidor SMTP. Es un registro pensado para el exterior; solo servidores ajenos que necesitan entregar correo a @um.es realizan la consulta.
+ERRORES: A y B) No se pueden elegir individualmente porque ambas son técnicamente correctas y complementarias.
+
+PREGUNTA: Ante un intercambio DNS, ¿cuál de las siguientes sentencias es VERDADERA?
+A) La solicitud (DNS query) contiene registros en la sección questions de la consulta.
+B) La solicitud (DNS query) contiene registros en la sección questions y answers de la consulta.
+C) La respuesta (DNS reply) contiene registros en la sección answers pero no en la sección questions.
+RESPUESTA: A
+EXPLICACION: Cuando un cliente genera una solicitud (Query), solo está formulando una pregunta. Por tanto, la única sección completada es la de Questions.
+ERRORES: B) Una solicitud no incluye Answers porque el cliente aún no conoce la resolución. C) El mensaje de respuesta vuelve a incluir la sección Questions original para que el cliente asocie la respuesta con su pregunta.
+
+PREGUNTA: Ante un intercambio DNS, ¿qué mensaje contiene MÁS información durante un intercambio?
+A) El DNS query.
+B) El DNS reply.
+C) Ambos mensajes tienen el mismo tamaño ya que tienen el mismo formato.
+RESPUESTA: B
+EXPLICACION: El mensaje Reply añade carga útil masiva. Encapsula la sección Questions, Answers (registros resueltos), Authority y secciones Additional.
+ERRORES: A) El Query es la mínima expresión (solo la pregunta). C) Confunde tener el mismo formato de cabeceras con tener el mismo tamaño; en el Query la mayoría de bloques van vacíos.
+
+PREGUNTA: Sobre el transporte de mensajes DNS, indica la sentencia VERDADERA:
+A) Todos los mensajes DNS se transportan sobre UDP/53.
+B) Todos los mensajes se transportan sobre UDP/53, salvo sincronización entre Primario y Secundario (TCP/53).
+C) Los mensajes DNS pueden ser transportados sobre UDP/53 o TCP/53, en función de lo que decida el cliente DNS.
+RESPUESTA: C
+EXPLICACION: El estándar define que el servicio escuche en ambos protocolos. El cliente puede conmutar a TCP si recibe una respuesta truncada (TC=1) que excede el límite de tamaño.
+ERRORES: A) Excluye TCP, haciendo imposibles respuestas grandes como DNSSEC o transferencias. B) Limita erróneamente TCP a la relación Primario-Secundario.
+
+PREGUNTA: En relación a los servidores DNS primario y secundario. Indica la sentencia VERDADERA:
+A) Solo el primario está activo; el secundario solo se activa cuando cae el primario.
+B) El primero escucha en UDP/53 y el secundario en TCP/53.
+C) El administrador solo configura el fichero de zona en el primario; el secundario lo copia de modo automático.
+RESPUESTA: C
+EXPLICACION: Define el principio de autoridad única de configuración. El Secundario detecta cambios mediante el número de serie del registro SOA e inicia la réplica automática.
+ERRORES: A) Plantea un escenario Pasivo/Activo erróneo; ambos están Activos/Activos resolviendo consultas. B) Segmenta los protocolos de forma arbitraria; ambos deben abrir puerto 53 para UDP y TCP.
+
+PREGUNTA: ¿Cuál es el protocolo del nivel de transporte utilizado en DNS en las consultas estándar?
+A) El DNS utiliza el protocolo UDP en el puerto 53.
+B) El DNS utiliza el protocolo HTTP en el puerto 80.
+C) El DNS utiliza el protocolo TCP en el puerto 53.
+RESPUESTA: A
+EXPLICACION: Para resolución estándar se usa UDP por rapidez y baja sobrecarga al no requerir establecimiento de conexión previa.
+ERRORES: B) HTTP se usa para tráfico web, no para DNS. C) TCP se usa para tareas pesadas como transferencias de zona o respuestas truncadas, no para consultas estándar.
+
+PREGUNTA: El servidor DNS que recibe consultas para nombres bajo el ".org" es de tipo:
+A) Servidor DNS raíz.
+B) Servidor Top-Level Domain (TLD).
+C) Servidor Authoritative/Autoritario.
+RESPUESTA: B
+EXPLICACION: Extensiones finales como ".org" son dominios de nivel superior (TLD). Sus servidores redirigen las consultas de los dominios con esa misma extensión.
+ERRORES: A) El raíz es el primer paso y solo redirige al servidor TLD correspondiente. C) El autoritario es el último paso con la IP final de un dominio concreto.
+
+PREGUNTA: Si el servidor DNS de la UMU atiende resoluciones bajo "um.es". Indica la sentencia VERDADERA:
+A) Es el servidor DNS Autoritario para el dominio "um.es".
+B) Es el servidor DNS Local para los usuarios del dominio "um.es".
+C) Ambas son ciertas.
+RESPUESTA: C
+EXPLICACION: Cumple doble función: es Autoritario porque posee los registros definitivos de la institución y es Local porque resuelve las peticiones externas de sus usuarios.
+ERRORES: A y B) Elegir solo una daría una respuesta incompleta.
+
+PREGUNTA: Respecto a los tipos de resolución DNS, indica la sentencia FALSA:
+A) El cliente DNS (resolver) actúa de la misma forma sea la consulta iterativa o recursiva.
+B) El servidor DNS autoritativo siempre recibe el mismo número de solicitudes en ambos casos.
+C) Las consultas de tipo recursivo producen menos sobrecarga en los niveles superiores de la jerarquía.
+RESPUESTA: C
+EXPLICACION: Es FALSA porque las consultas recursivas obligan al servidor receptor a hacer todo el trabajo manteniendo la conexión abierta, consumiendo muchos recursos.
+ERRORES: A y B) Son verdaderas: el cliente siempre manda la petición y espera; el autoritativo final siempre recibe una única solicitud para entregar la IP.
+
+PREGUNTA: En una consulta iterativa (sin caché) ¿Cuántos mensajes se intercambian para resolver www.um.es?
+A) 8
+B) 2
+C) 10
+RESPUESTA: A
+EXPLICACION: Requiere 8 mensajes: Cliente-Local (1), Local-Raíz (2), Raíz-Local (3), Local-TLD.es (4), TLD.es-Local (5), Local-Autoritativo (6), Autoritativo-Local (7), Local-Cliente (8).
+ERRORES: B) Solo ocurriría si ya estuviese en caché. C) Implicaría un nivel jerárquico extra que no aplica aquí.
+
+PREGUNTA: En una consulta recursiva (sin caché) ¿Cuántos mensajes se intercambian para resolver www.um.es?
+A) 8
+B) 2
+C) 10
+RESPUESTA: A
+EXPLICACION: La cantidad es la misma aunque el camino cambie: Cliente-Local (1), Local-Raíz (2), Raíz-TLD (3), TLD-Autoritativo (4), Autoritativo-TLD (5), TLD-Raíz (6), Raíz-Local (7), Local-Cliente (8).
+ERRORES: B) Escenario con caché. C) Requeriría un salto adicional no presente en este dominio.
+
+PREGUNTA: Si un DNS local solo realiza una consulta externa para resolver www.um.es, ¿qué tipo de consulta es?
+A) Iterativa al autorizado de um.es (IPs de TLD y um.es ya cacheadas en local).
+B) Recursiva desde el DNS local a los servidores raíces.
+C) Ambas son correctas.
+RESPUESTA: C
+EXPLICACION: Ambos escenarios provocan que el DNS local solo envíe un único paquete al exterior.
+ERRORES: A y B) Ignorarían la otra posibilidad técnica válida.
+
+PREGUNTA: ¿Qué sucede si cambia la IP de un host en el DNS?
+A) El nuevo mapeo se actualiza automáticamente en todos los servidores DNS.
+B) El nuevo mapeo podría no actualizarse hasta que expire el tiempo de vida (TTL) de la caché.
+C) Es necesario reiniciar todos los servidores DNS para actualizar el mapeo.
+RESPUESTA: B
+EXPLICACION: Los registros tienen un temporizador (TTL). Los demás servidores seguirán devolviendo la IP antigua hasta que su TTL llegue a cero y pregunten de nuevo.
+ERRORES: A) El DNS no usa notificaciones automáticas globales. C) Los servidores se actualizan solos al caducar su caché (TTL) sin reinicios.
+
+PREGUNTA: Desde el punto de vista de las cachés DNS, ¿en qué escenario el DNS Local hará mejor uso de la caché?
+A) Consulta iterativa.
+B) Consulta recursiva.
+C) En ambos casos el uso es igual de efectivo.
+RESPUESTA: A
+EXPLICACION: En la iterativa, el DNS Local descubre y almacena las IPs de todos los servidores intermedios de la ruta, enriqueciendo su base de datos.
+ERRORES: B) En la recursiva se delega el trabajo y solo se recibe la IP definitiva, perdiendo la información intermedia. C) El uso no es igual de efectivo por la pérdida de datos intermedios en la recursiva.

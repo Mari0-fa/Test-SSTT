@@ -1,0 +1,111 @@
+PREGUNTA: Cuando el servidor envía un fragmento de datos protegido con SSL/TLS al cliente, ¿Cuál de estas operaciones se realiza en el cliente antes en la recepción del fragmento?
+A) Descomprimir los datos
+B) Descifrar los datos
+C) Autenticar los datos
+RESPUESTA: B
+EXPLICACION: El protocolo de registro (Record Protocol) de SSL/TLS funciona en capas superpuestas. Al enviar datos, el último paso del emisor es el cifrado. Por tanto, al recibir el paquete, la primera capa que el receptor debe retirar es la del cifrado. Hasta que no se descifra, el cliente solo ve ruido binario y no puede comprobar el MAC (autenticar) ni acceder a los datos comprimidos.
+ERRORES: A) La descompresión es la última operación; requiere que los datos ya estén descifrados y validados. C) En el flujo estándar (MAC-then-Encrypt), el código MAC está cifrado junto con los datos, por lo que no se puede verificar su autenticidad sin descifrar el bloque primero.
+
+PREGUNTA: En el Record Protocol, al proteger un bloque de datos, ¿en qué paso se utiliza el IV?
+A) Al comprimir el bloque
+B) Al generar el código MAC para autenticar el bloque
+C) Al cifrar el bloque
+RESPUESTA: C
+EXPLICACION: El IV (Initialization Vector) es un bloque de bits que introduce aleatoriedad en los algoritmos de cifrado simétrico (como AES en modo CBC). Su objetivo es garantizar que si se envían dos mensajes idénticos, sus resultados cifrados sean totalmente distintos, evitando patrones detectables. Es una herramienta exclusiva de la etapa de cifrado.
+ERRORES: A) La compresión busca patrones repetitivos para reducir tamaño y no emplea vectores ni claves criptográficas. B) El MAC utiliza una clave secreta y una función hash para garantizar la integridad, no requiere un vector de inicialización de cifrado.
+
+PREGUNTA: ¿Cómo se autentica un bloque de datos protegido con SSL Record Protocol?
+A) Va firmado por la clave privada del emisor (cliente o servidor SSL).
+B) Mediante una función Hash que utiliza como entrada los datos en claro (comprimidos o no).
+C) Mediante un MAC de los datos en claro y una clave compartida entre cliente y servidor.
+RESPUESTA: C
+EXPLICACION: El Record Protocol utiliza un MAC (Message Authentication Code), que consiste en una función hash combinada con una clave secreta simétrica. Al usar una clave que solo conocen el cliente y el servidor, se garantiza que los datos no han sido modificados (integridad) y que provienen de la contraparte legítima (autenticidad).
+ERRORES: A) Las firmas digitales asimétricas son muy pesadas computacionalmente; se usan en el Handshake inicial pero no para cada bloque de datos por rendimiento. B) Un hash simple sin clave secreta solo detecta errores accidentales de red, pero no protege contra un atacante activo que altere los datos y recalcule el hash.
+
+PREGUNTA: Si dos partes han acordado usar TLS con la suite criptográfica TLS_ECDHE_RSA_AES_128_CBC_SHA_1, indica la sentencia VERDADERA:
+A) La autenticación de las identidades de las partes se realiza mediante un código MAC basado en SHA-1.
+B) La generación de la pre_master_secret se realiza mediante DH.
+C) El cifrado de los datos se realiza mediante RSA.
+RESPUESTA: B
+EXPLICACION: El acrónimo ECDHE significa Elliptic Curve Diffie-Hellman Ephemeral. El protocolo Diffie-Hellman (DH) es el mecanismo matemático encargado de acordar el secreto compartido inicial (pre-master secret) entre ambas partes de forma segura sobre un canal inseguro.
+ERRORES: A) La autenticación de identidades se realiza mediante certificados digitales y criptografía RSA; SHA-1 se usa para calcular el MAC de integridad de los datos. C) El cifrado simétrico de los datos de la sesión se delega a AES_128_CBC por velocidad; RSA solo firma los parámetros del handshake para autenticación.
+
+PREGUNTA: Respecto a la autenticación del cliente en TLS, indica la opción CORRECTA:
+A) El cliente se autentica del mismo modo en los modos RSA y DH.
+B) Para demostrar que el cliente posee la clave privada asociada a su certificado, en el modo RSA el cliente envía un mensaje client_verify, en el modo DH envía un mensaje client_key_exchange.
+C) En ambos casos el mensaje certificate enviado por el cliente va firmado por la clave privada del cliente para demostrar que la posee.
+RESPUESTA: B
+EXPLICACION: En el modo RSA se requiere una firma explícita sobre el histórico de la sesión mediante el mensaje CertificateVerify (client_verify). En cambio, en el modo DH fijo, la demostración es implícita: el cliente envía sus parámetros públicos en el ClientKeyExchange; si no tuviera la clave privada DH correspondiente, no podría calcular la misma clave simétrica final que el servidor y la conexión fallaría más adelante.
+ERRORES: A) El modo RSA usa una firma asimétrica explícita y el modo DH una validación matemática implícita ligada a la construcción del secreto. C) El mensaje Certificate contiene el documento X.509 público tal cual (firmado por la CA). La demostración de posesión ocurre en los pasos posteriores descritos.
+
+PREGUNTA: En relación al Handshake Protocol de SSL, indica qué función tiene el mensaje CLIENT_VERIFY. Indica la sentencia VERDADERA:
+A) Contiene una prueba (una firma digital) de que el cliente SSL posee la clave privada asociada a su certificado X.509.
+B) Contiene el certificado X.509 del cliente SSL para su autenticación.
+C) Da por terminado el intercambio de mensajes de certificados entre cliente y servidor.
+RESPUESTA: A
+EXPLICACION: Para evitar ataques de repetición donde un tercero use un certificado público interceptado, el cliente debe demostrar que es el dueño legítimo de la clave privada correspondiente. Lo hace generando una firma digital en el mensaje CertificateVerify (CLIENT_VERIFY) sobre los mensajes previos del acuerdo. El servidor lo valida con la clave pública del certificado.
+ERRORES: B) El certificado del cliente se transmite previamente en un mensaje propio llamado Certificate. C) Este mensaje no cierra la negociación; el cierre formal del acuerdo de cifrado ocurre con los mensajes Finished.
+
+PREGUNTA: En SSL/TLS, los mensajes en los que se produce el intercambio del material criptográfico de Diffie Hellman son:
+A) Server_key_exchange y Client_verify.
+B) Client_auth y Server_key_exchange.
+C) Server_key_exchange y Client_key_exchange.
+RESPUESTA: C
+EXPLICACION: Diffie-Hellman requiere que ambos extremos intercambien sus componentes públicos para derivar de forma matemática el mismo secreto. El servidor propone sus parámetros y su clave pública efímera en el mensaje ServerKeyExchange, y el cliente responde enviando su propio valor público en el mensaje ClientKeyExchange.
+ERRORES: A) El mensaje Client_verify proporciona una firma de autenticación, no aporta valores matemáticos para el algoritmo DH. B) El término Client_auth describe el proceso de autenticar al usuario, pero no corresponde a ningún mensaje estructural de intercambio de material de claves simétricas.
+
+PREGUNTA: En el modelo DH de TLS, ¿Cómo negocian cliente y servidor los valores públicos DH (módulo y generador) para poder obtener luego la clave compartida?
+A) El cliente envía estos valores al servidor en el client_key_exchange y el servidor los acepta.
+B) El servidor envía estos valores en el server_key_exchange y el cliente los acepta.
+C) No se envían, están estandarizados y se utilizan siempre los mismos.
+RESPUESTA: B
+EXPLICACION: En la configuración clásica de Diffie-Hellman Efímero (DHE), el servidor define el marco de seguridad enviando el módulo primo p y el generador g, junto con su parte pública del intercambio, dentro del mensaje ServerKeyExchange. El cliente evalúa estos parámetros y, si son aceptables, prosigue con el handshake.
+ERRORES: A) El flujo de la negociación de parámetros está invertido; es el servidor el que realiza la propuesta inicial de seguridad y el cliente responde. C) Aunque en variantes modernas (como curvas elípticas en TLS 1.3) se usan grupos nombrados fijos, el estándar tradicional evaluado exige que el servidor envíe explícitamente los parámetros matemáticos.
+
+PREGUNTA: En relación a SSL, indica la sentencia VERDADERA:
+A) No requiere la modificación de los protocolos de la capa de aplicación (e.g. HTTP) para poder hacer uso de SSL.
+B) Ofrece seguridad para los protocolos de la capa de red, por lo que protege la información del nivel IP y los protocolos de capa de aplicación (i.e. HTTP) no son alterados por SSL.
+C) Permite que un cliente y un servidor, que previamente han tenido que intercambiar material criptográfico por medio de algún otro protocolo, establecer un secreto compartido y establecer un canal seguro.
+RESPUESTA: A
+EXPLICACION: SSL/TLS opera como una capa intermedia situada entre la capa de Transporte (TCP) y la de Aplicación. Proporciona una abstracción transparente: los protocolos de nivel superior como HTTP, FTP o SMTP funcionan exactamente igual, simplemente vuelcan su tráfico sobre el socket seguro de SSL para que este lo cifre antes de bajar a la red.
+ERRORES: B) SSL/TLS no trabaja en el nivel de red (IP), esa es la función de IPsec; trabaja protegiendo la carga útil sobre TCP. C) El principal propósito del Handshake de SSL es establecer el secreto compartido desde cero mediante claves asimétricas, sin requerir acuerdos criptográficos previos.
+
+PREGUNTA: El conjunto de protocolos que forman parte de SSL/TLS son:
+A) SSL Handshake protocol, SSL CCSP, SSL Client Verify, y SSL Record protocol.
+B) SSL Record protocol, SSL Alert protocol, SSL Verify certificates, y SSL Handshake protocol.
+C) SSL Record protocol, SSL Handshake protocol, SSL CCSP y SSL Alert protocol.
+RESPUESTA: C
+EXPLICACION: La arquitectura de SSL/TLS está estructurada en dos niveles fundamentales. En el nivel inferior se encuentra el Record Protocol (servicios de confidencialidad e integridad). Sobre este operan tres protocolos de control: el Handshake Protocol (negociación), el Change Cipher Spec Protocol o CCSP (notificación del cambio de estrategia de cifrado) y el Alert Protocol (gestión de errores y cierres).
+ERRORES: A) "SSL Client Verify" es un tipo de mensaje dentro de la negociación, pero no constituye un protocolo independiente en la pila estándar. B) "SSL Verify certificates" es una acción lógica realizada durante el saludo del protocolo, pero no un protocolo propio de la arquitectura.
+
+PREGUNTA: Cuando en SSL/TLS realizamos el handshake utilizando como algoritmo de intercambio de clave RSA, la pre-master-secret se envía en el mensaje:
+A) Client_key_exchange
+B) Client_verify
+C) Finish
+RESPUESTA: A
+EXPLICACION: En el intercambio de claves basado en RSA, es el cliente quien genera de forma local el bloque de 48 bytes del pre-master secret. Lo cifra con la clave pública del servidor (extraída de su certificado) y lo transmite mediante el mensaje ClientKeyExchange. Solo el servidor legítimo podrá descifrarlo con su clave privada.
+ERRORES: B) El mensaje de verificación del cliente (CertificateVerify) sirve para probar la identidad del usuario mediante firma, no para la distribución del secreto. C) El mensaje Finished es el cierre del intercambio y valida que los mensajes previos no sufrieron alteraciones, usándose cuando las claves ya han sido calculadas.
+
+PREGUNTA: Cuando Bob recibe un certificado de servidor durante un acceso HTTPS, y debe comprobar la validez del certificado del servidor web. ¿Cómo sabe Bob qué función de Resumen Digital (Hash) y de cifrado debe usar para validar la firma del certificado? Indica la sentencia VERDADERA.
+A) Usará las funciones de resumen y cifrado que estén aprobadas como estándar en ese momento.
+B) Esa información va contenida en el propio certificado de modo que todo el mundo pueda validarlo.
+C) Las funciones que se negocien durante el handshake de SSL (clienthello y serverhello).
+RESPUESTA: B
+EXPLICACION: Los certificados X.509 son estructuras de datos autocontenidas. Para que un cliente pueda validar la firma que la Autoridad de Certificación (CA) estampó en el documento, el propio certificado incluye un campo explícito llamado "Algoritmo de firma" (Signature Algorithm, ej: sha256WithRSAEncryption). Esto indica las funciones exactas a aplicar.
+ERRORES: A) Coexisten múltiples algoritmos válidos en producción (RSA, ECDSA, SHA-256, SHA-384), por lo que el cliente no puede adivinar cuál usó la CA basándose en popularidad. C) Los Hello negocian los algoritmos simétricos para la sesión de datos actual; la firma del certificado del servidor fue generada previamente por la CA y sus parámetros son estáticos.
+
+PREGUNTA: El mensaje Finish del handshake del SSL consiste en:
+A) Es un hash de toda la conversación SSL firmada por la clave privada del servidor.
+B) En un hash de toda la conversación SSL firmada por la clave privada del cliente.
+C) En un hash de toda la conversación SSL usando la master secret negociada entre cliente y servidor. Esto es un HMAC.
+RESPUESTA: C
+EXPLICACION: El mensaje Finished es la primera transmisión protegida con la clave e integridad simétricas recién acordadas. Consiste en un resumen (hash) acumulado de todos los mensajes previos intercambiados en el handshake, procesado con la Master Secret mediante una función HMAC. Esto valida que ningún atacante alteró los mensajes iniciales.
+ERRORES: A y B) El uso de firmas digitales asimétricas (claves privadas) requiere un alto coste de procesamiento. Se limita a la fase de autenticación inicial; para sellar el handshake es mucho más eficiente usar mecanismos simétricos veloces como el HMAC sobre el secreto maestro.
+
+PREGUNTA: ¿En qué punto de la conversación se autentica al servidor en una negociación SSL con distribución de claves basada en RSA?
+A) En el intercambio client_hello, server_hello.
+B) En el mensaje Finish recibido por el cliente y generado por el servidor usando la master_secret.
+C) Cuando el servidor descifra el mensaje client_key_exchange enviado por el cliente.
+RESPUESTA: C
+EXPLICACION: En la distribución RSA, la autenticación es implícita y ocurre cuando el servidor procesa el ClientKeyExchange. Como el cliente cifró el pre-master secret con la clave pública del certificado del servidor, solo el servidor legítimo (dueño de la clave privada correspondiente) podrá extraer el secreto para generar las claves de cifrado y responder adecuadamente.
+ERRORES: A) En los mensajes Hello el servidor simplemente envía su certificado público, pero esto no demuestra la posesión de la clave privada asociada. B) El mensaje Finished confirma la validez de toda la sesión y las claves, pero la demostración técnica de la identidad (el descifrado del secreto) se ejecuta en el paso previo.

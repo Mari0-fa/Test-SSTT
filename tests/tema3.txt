@@ -1,0 +1,55 @@
+PREGUNTA: En SMTP, ¿cómo se indica el final de un mensaje?
+A) Mediante la secuencia "CRLF.CRLF"
+B) Con el comando "250 Message accepted for delivery"
+C) Con el comando "DATA"
+RESPUESTA: A
+EXPLICACION: El protocolo SMTP utiliza un mecanismo de transparencia de datos para indicar el fin del cuerpo del mensaje. Consiste en una línea con un único punto (.), que en caracteres de control se traduce como Retorno de Carro y Salto de Línea (CRLF), seguido del punto (.) y finalizando con otro CRLF.
+ERRORES: B) Es un código de respuesta del servidor que confirma la recepción exitosa, no un comando de finalización del cliente. C) Es el comando que inicia el envío del cuerpo del mensaje, justo lo opuesto.
+
+PREGUNTA: ¿Qué protocolos de aplicación son necesarios para que un mensaje viaje desde el servidor de la organización A al servidor de la organización B?
+A) SMTP y DNS.
+B) Sólo SMTP.
+C) SMTP y POP/IMAP.
+RESPUESTA: A
+EXPLICACION: SMTP es el encargado de la transferencia de datos entre servidores. DNS es indispensable porque el servidor remitente necesita resolver los registros MX (Mail Exchange) para obtener la dirección IP del servidor de destino antes de iniciar la conexión SMTP.
+ERRORES: B) SMTP carece de mecanismos propios para resolver nombres de dominio a direcciones IP. C) POP e IMAP se usan posteriormente para que el destinatario descargue o lea mensajes desde su propio buzón, no intervienen en el tránsito entre servidores.
+
+PREGUNTA: Si comparamos POP3 en modo "descargar y mantener" con respecto a IMAP, indica la afirmación FALSA:
+A) En ambos podemos re-leer el correo si cambiamos de equipo.
+B) En ambos tenemos almacenado nuestro correo en el servidor.
+C) Si se borra un correo en el cliente de un dispositivo, desaparece de todos los dispositivos.
+RESPUESTA: C
+EXPLICACION: Esta afirmación es FALSA. En IMAP (sincronización bidireccional), el borrado se refleja en el servidor y en todos los equipos. En POP3 "descargar y mantener", el borrado es solo local en el dispositivo; el mensaje permanece intacto en el servidor y disponible para otros equipos.
+ERRORES: A) Es verdadera: en IMAP reside en el servidor y en POP3 modo mantener no se borra tras la descarga inicial. B) Es verdadera: IMAP lo hace por defecto y POP3 modo mantener conserva la copia en el buzón remoto.
+
+PREGUNTA: El protocolo IMAP (marca la respuesta VERDADERA):
+A) Al igual que POP3, permite gestionar el correo con carpetas.
+B) Por simplicidad, no requiere de autenticación.
+C) Permite que múltiples dispositivos accedan al servidor de correo.
+RESPUESTA: C
+EXPLICACION: IMAP está diseñado para la movilidad; mantiene mensajes y estructuras de directorios en el servidor, permitiendo que el usuario vea el mismo estado del buzón (leídos, respondidos, etc.) desde múltiples dispositivos simultáneamente.
+ERRORES: A) IMAP gestiona carpetas en el servidor; en POP3 las carpetas son estrictamente locales en el dispositivo del usuario. B) Por seguridad y privacidad, tanto IMAP como POP3 requieren autenticación mediante usuario y contraseña.
+
+PREGUNTA: Con respecto a MIME, indica la respuesta VERDADERA:
+A) Surge porque es necesario guardar el estado de los mensajes en el servidor de correo.
+B) Para enviar elementos multimedia, el cliente genera dos mensajes SMTP independientes.
+C) Permite enviar elementos multimedia, adjuntar otros correos o archivos de diversos tipos.
+RESPUESTA: C
+EXPLICACION: MIME (Multipurpose Internet Mail Extensions) estructura el correo para contener múltiples partes independientes, permitiendo incluir imágenes, audio, video, archivos comprimidos o mensajes completos como adjuntos.
+ERRORES: A) La gestión del estado en el servidor es función de protocolos como IMAP, no de MIME. B) Se genera un único mensaje SMTP dividido internamente en secciones delimitadas por fronteras (boundaries).
+
+PREGUNTA: Con respecto a MIME, indica la respuesta VERDADERA:
+A) El formato Base64 nos permite codificar mensajes binarios como mensajes de texto.
+B) La etiqueta boundary solo se utiliza con multipart/mixed y multipart/alternative.
+C) Para el envío de información MIME se han definido nuevos tipos de mensaje SMTP.
+RESPUESTA: A
+EXPLICACION: SMTP original solo transportaba ASCII de 7 bits. Base64 traduce datos binarios (imágenes, PDFs) a caracteres de texto seguros que SMTP puede transportar sin alteración para ser reconstruidos en el destino.
+ERRORES: B) El parámetro boundary es un requisito para cualquier subtipo de la familia multipart/* (como related o signed). C) SMTP no se modificó; MIME funciona encapsulado dentro del cuerpo del comando DATA estándar.
+
+PREGUNTA: Considerando un correo con "Content-Type: multipart/alternative" (indique la respuesta VERDADERA):
+A) Al abrir el correo, se muestra todo el texto que hay en el cuerpo del mensaje.
+B) Ofrece varias versiones y el UA elegirá la última que pueda ser representada.
+C) Ofrece varias versiones y el UA elegirá la primera que pueda ser representada.
+RESPUESTA: B
+EXPLICACION: El tipo multipart/alternative envía el mismo contenido en formatos diferentes ordenados por complejidad ascendente. El cliente de correo (UA) debe recorrer la lista y mostrar la última versión que soporte para dar la mejor experiencia visual.
+ERRORES: A) No acumula textos distintos, ofrece alternativas excluyentes; mostrar todo rompería el estándar. C) La primera opción suele ser la más simple (text/plain); elegirla siempre ignoraría formatos mejores como HTML.

@@ -1,0 +1,64 @@
+PREGUNTA: Una caché web actúa como:
+A) Sólo como servidor para el cliente HTTP original.
+B) Sólo como cliente para el servidor HTTP original.
+C) Actúa como servidor para el cliente HTTP original y como cliente para el servidor HTTP original.
+RESPUESTA: C
+EXPLICACION: Una caché web (servidor proxy) funciona de manera híbrida: se comporta como un servidor cuando atiende directamente la solicitud de un navegador enviándole un objeto guardado localmente; y se comporta como un cliente cuando no dispone de dicho objeto y debe solicitarlo al servidor de origen en nombre del usuario.
+ERRORES: A) Es falsa porque si el contenido no está almacenado o caduca, está obligada a actuar como cliente frente al servidor de origen. B) Es falsa porque si únicamente fuera un cliente, no podría responder de forma directa a los navegadores locales para ahorrar ancho de banda.
+
+PREGUNTA: Respecto a los sistemas de Caché Web, indica la sentencia VERDADERA:
+A) Una caché Web reduce el número de peticiones HTTP que un servidor recibe.
+B) Una caché Web no cachea contenido dinámico (p.ej. CGIs).
+C) Ambas son verdaderas.
+RESPUESTA: C
+EXPLICACION: Ambas afirmaciones describen principios fundamentales. Las peticiones resuelvas localmente no viajan al servidor de origen (reduciendo su carga). Además, el contenido dinámico cambia en cada ejecución o depende del usuario, por lo que guardarlo rompería la lógica de la aplicación.
+ERRORES: A y B) Son afirmaciones totalmente ciertas, pero seleccionarlas de forma aislada dejaría la respuesta incompleta al existir una opción integradora.
+
+PREGUNTA: Por lo general, una caché web está más próxima a:
+A) Los clientes web.
+B) Los servidores web.
+C) Se encuentra en un punto intermedio de la red.
+RESPUESTA: A
+EXPLICACION: El propósito clave de una caché es disminuir la latencia y desahogar los enlaces externos. Para conseguir esto de forma óptima, se instala en la misma red de área local (LAN) o en la red del ISP del usuario, quedando a escasa distancia de los clientes.
+ERRORES: B) Si se colocara junto al servidor de origen, las solicitudes tendrían que cruzar igualmente todo Internet, anulando el ahorro de tráfico en las líneas principales. C) Las topologías se diseñan en los extremos de acceso junto a los clientes, no de manera flotante en el núcleo de Internet.
+
+PREGUNTA: En HTTP, cuando se aplica un GET condicional, ¿qué cabecera utiliza el servidor para indicar al cliente la fecha en la que se modificó el objeto devuelto?
+A) If-modified-since
+B) Date
+C) Last-modified
+RESPUESTA: C
+EXPLICACION: El servidor web adjunta la cabecera Last-modified en sus respuestas ordinarias para comunicar el instante exacto en el que ese archivo sufrió su última alteración. El cliente almacena este dato junto con el recurso en su caché local.
+ERRORES: A) Esta cabecera la genera el cliente (no el servidor) en peticiones posteriores para preguntar si el recurso ha cambiado desde entonces. B) Indica el momento temporal exacto en el que se originó la transmisión del mensaje HTTP, no el estado del archivo.
+
+PREGUNTA: Un cliente tiene un objeto del 31/12/2019 15:30:00 y lo vuelve a pedir el 1/1/2020 con "if-modified-since: 31/12/2019 15:30:00". Si el servidor tiene el objeto con fecha 31/12/2019 17:30:00, ¿qué devolverá?
+A) HTTP/1.1 200 OK y el objeto en el cuerpo.
+B) HTTP/1.1 403 Forbidden.
+C) HTTP/1.1 304 Not Modified.
+RESPUESTA: A
+EXPLICACION: El servidor compara la condición del cliente (15:30) con su archivo (17:30). Como la versión del servidor es posterior (más moderna), la copia del cliente está obsoleta. Responde con éxito (200 OK) e inyecta la nueva versión del archivo en el cuerpo.
+ERRORES: B) Se vincula a fallos de autorización y falta de permisos de lectura, lo cual no aplica aquí. C) El servidor solo respondería 304 si el archivo no hubiera cambiado en absoluto desde la fecha indicada por el cliente.
+
+PREGUNTA: Common Gateway Interface (CGI) es una interfaz que se aplica entre:
+A) Un servicio web (e.g. Apache) y una aplicación web (e.g. Facebook) ejecutándose en el servicio web.
+B) Un servicio web (i.e. Apache) y una caché web.
+C) Un navegador web (i.e. Firefox) y un servicio web (i.e. Apache).
+RESPUESTA: A
+EXPLICACION: CGI es una especificación estándar para que el software del servidor web básico (que solo transmite archivos estáticos) sea capaz de interactuar, pasar parámetros y arrancar programas o scripts externos para que generen dinámicamente el código de respuesta.
+ERRORES: B) La comunicación entre un servidor de origen y una caché se gestiona usando el protocolo de red HTTP. C) El canal que une al navegador con el servidor se implementa sobre TCP/IP transportando mensajes HTTP; el navegador desconoce la mecánica interna del servidor.
+
+PREGUNTA: En una solicitud HTTP POST dirigida a un script CGI, ¿cómo obtiene la aplicación web los datos del formulario enviados por el cliente?
+A) Mediante la entrada estándar (stdin).
+B) Mediante la variable de entorno QUERY_STRING.
+C) A través de una base de datos compartida.
+RESPUESTA: A
+EXPLICACION: Bajo el método POST, los datos del formulario se empaquetan en el cuerpo del mensaje HTTP (debajo de las cabeceras). El servidor web lee ese cuerpo y se lo transmite al proceso del script CGI volcándolo directamente a través de su entrada estándar.
+ERRORES: B) Esta vía queda reservada exclusivamente para el método GET, donde los datos se añaden al final de la URL detrás del símbolo ? y se guardan en dicha variable. C) El servidor y el CGI no usan bases de datos para comunicarse parámetros; la transferencia es directa a nivel de sistema operativo.
+
+PREGUNTA: En relación a HTTP/2 indica cuál de estas sentencias es VERDADERA:
+A) HTTP/2 y HTTP/1.1 definen diferentes códigos de estado y métodos.
+B) HTTP/2 permite mejorar las peticiones multi-objetos evitando que objetos grandes puedan bloquear a pequeños.
+C) HTTP/1.1 es igual de eficiente que HTTP/2 gracias a las conexiones persistentes con pipeline.
+RESPUESTA: B
+EXPLICACION: HTTP/2 introduce multiplexación. Rompe los mensajes en pequeños fragmentos independientes (marcos) que se entrelazan sobre una única conexión TCP. Así, los marcos de un recurso pesado se intercalan con los de uno ligero, evitando bloqueos de entrega.
+
+ERRORES: A) Es falsa; HTTP/2 mantiene la misma semántica (mismos métodos como GET/POST y mismos códigos como 200 o 304). Los cambios son a nivel de transporte binario. C) Es falsa; el pipelining de HTTP/1.1 sufre de Bloqueo en Cabeza de Línea (HoL), atascando las peticiones si el servidor tarda en procesar la primera de la cola.

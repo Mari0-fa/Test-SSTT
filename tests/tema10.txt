@@ -1,0 +1,47 @@
+PREGUNTA: En un escenario IPSec gateway-to-gateway, indica la sentencia VERDADERA
+A) Los hosts finales no aplican IPsec, pero pueden ver el contenido protegido entre gateways
+B) IKEv2 se ejecuta solo entre los gateways, pero las IPsec SAs se aplican entre hosts finales
+C) Las SPDs y las SADs se rellenan sólo en los gateways
+RESPUESTA: C
+EXPLICACION: En un escenario gateway-to-gateway (túnel sitio a sitio), la seguridad es totalmente transparente para los hosts finales. El túnel IPSec se establece exclusivamente entre los dos dispositivos que actúan como pasarelas. Por lo tanto, toda la lógica de seguridad, negociación de claves y bases de datos residen únicamente en dichos gateways.
+ERRORES: A) Falsa porque los hosts envían tráfico en claro, pero no pueden ver el contenido protegido (cifrado) en el túnel. B) Falsa porque confunde los extremos: tanto la negociación (IKEv2) como la aplicación de la seguridad (IPSec SAs) ocurren únicamente entre los gateways.
+
+PREGUNTA: Considera un nuevo flujo de paquetes de un host A a un host B usando IPsec. Entonces ocurre:
+A) IKEv2 negocia una asociación de seguridad por cada paquete IPsec del flujo.
+B) IKEv2 negocia una asociación de seguridad para el primer paquete del flujo únicamente.
+C) No es necesaria la intervención de IKE para ningún paquete del flujo.
+RESPUESTA: B
+EXPLICACION: Cuando llega el primer paquete, se consulta la SPD. Si requiere protección y no existe una SA activa, se invoca a IKEv2. Una vez establecida y guardada en la SAD, todos los paquetes siguientes del mismo flujo utilizan esa SA existente para mayor eficiencia.
+ERRORES: A) No porque negociar una SA por cada paquete colapsaría la red por la carga de cómputo criptográfico. C) No porque decir que no es necesaria la intervención de IKE es falso, ya que alguien debe acordar las claves de cifrado inicialmente.
+
+PREGUNTA: En relación con IKEv2, indicar cuáles de las opciones es CIERTA:
+A) Utiliza certificados RSA para poder compartir una clave simétrica.
+B) Utiliza Diffie-Hellman para compartir una clave simétrica entre Initiator y Responder para derivar claves y construir una IPsec SA.
+C) Utiliza Diffie-Hellman para compartir una clave simétrica entre Initiator y Responder para derivar claves y construir una IKE SA primero y luego una IPsec SA.
+RESPUESTA: C
+EXPLICACION: IKEv2 primero construye una IKE SA mediante Diffie-Hellman y, dentro de ese canal seguro, negocia las IPsec SAs.
+ERRORES: A) Los certificados RSA sirven para autenticar, no para acordar claves simétricas. B) Es incompleta: falta la creación previa de la IKE SA.
+
+PREGUNTA: En IKEv2, durante el intercambio IKE_SA_INIT, se negocia una suite criptográfica entre Initiator y Responder. Esta suite criptográfica indica …
+A) Los algoritmos para proteger el intercambio IKE_AUTH
+B) Los algoritmos para proteger las IPsec SAs a nivel de red
+C) Los algoritmos para proteger el intercambio IKE_AUTH y las IPsec SAs a nivel de red
+RESPUESTA: A
+EXPLICACION: IKE_SA_INIT define la protección del IKE_AUTH, que es el siguiente paso donde viajan identidades y autenticación.
+ERRORES: B) Los algoritmos de IPsec se negocian después, dentro de IKE_AUTH o CREATE_CHILD_SA. C) Mezcla fases distintas; IPsec no se negocia en IKE_SA_INIT.
+
+PREGUNTA: ¿Qué información NO va contenida en un mensaje ESP?
+A) El SPI (Security Parameter Index).
+B) Algoritmo de cifrado usado para cifrar el paquete.
+C) Un número de secuencia.
+RESPUESTA: B
+EXPLICACION: El algoritmo no viaja en el paquete. El receptor lo obtiene consultando la SA asociada al SPI.
+ERRORES: A) El SPI es esencial para identificar la SA. C) El número de secuencia previene ataques de replay.
+
+PREGUNTA: Cuando se usa ESP en modo túnel:
+A) Se cifra solo la cabecera TCP/UDP, y el campo de Datos del mensaje original
+B) Se cifra la cabecera IP, la cabecera TCP/UDP, y el campo de Datos del mensaje original
+C) Se cifra la nueva cabecera IP y la cabecera IP, la cabecera TCP/UDP, y el campo de Datos del mensaje original
+RESPUESTA: B
+EXPLICACION: En modo túnel se cifra todo el paquete IP original, incluida su cabecera. Se añade una nueva cabecera IP externa.
+ERRORES: A) Eso corresponde al modo transporte. B) La nueva cabecera no se cifra porque los routers deben leerla.

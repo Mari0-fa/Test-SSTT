@@ -1,0 +1,63 @@
+PREGUNTA: La arquitectura general de IPsec incluye:
+A) Un protocolo IKE para intercambio de claves y autenticación. La implementación de IPsec está en el kernel con dos bases de datos: SPD (políticas) y SAD (material criptográfico).
+B) Un protocolo IKE para intercambio de claves y autenticación. La implementación de IPsec está en el kernel con dos bases de datos: SPD (material criptográfico) y SAD (políticas).
+C) La implementación de IKE e IPsec se encuentran en el kernel junto con la SPD (material criptográfico) y la SAD (políticas).
+RESPUESTA: A
+EXPLICACION: La arquitectura de IPsec se apoya en el protocolo IKE para la gestión de claves (en espacio de usuario) y el procesamiento de paquetes en el kernel. Utiliza la SPD para almacenar las políticas de seguridad y la SAD para el material criptográfico y algoritmos de las conexiones activas.
+ERRORES: B) Invierte las funciones de las bases de datos SPD y SAD. C) IKE habitualmente corre en espacio de usuario, no en el kernel, y también invierte las funciones de las bases de datos.
+
+PREGUNTA: ¿Cuál de estos servicios no implementa IPsec y por ello necesita la asistencia de IKE?
+A) Confidencialidad e integridad de los paquetes.
+B) Negociación de claves simétricas.
+C) Rechazo de paquetes reenviados debido a un número de secuencia fuera de orden.
+RESPUESTA: B
+EXPLICACION: IPsec (AH y ESP) se encarga de proteger el tráfico, pero no tiene mecanismos para que los extremos se autentiquen y acuerden claves de forma segura por sí solos. IKE es el protocolo auxiliar que realiza esta negociación previa.
+ERRORES: A) La confidencialidad e integridad son servicios básicos que sí implementa IPsec. C) El anti-replay lo gestiona IPsec mediante números de secuencia en las cabeceras.
+
+PREGUNTA: Si en la SPD hay estas reglas: (1. UDP 1.2.3.4 a 2.1.3.5:25 -> PROTECT) (2. TCP * a 2.1.3.5:500 -> BYPASS) (3. * * a * * -> DISCARD). ¿Qué pasa con un paquete TCP de 1.2.3.4 a 2.1.3.5:443?
+A) El paquete se deja pasar pero no se protege.
+B) El paquete se protege con ESP en modo transporte.
+C) El paquete se descarta.
+RESPUESTA: C
+EXPLICACION: Las reglas se evalúan en orden. El paquete no coincide con la primera (es TCP, no UDP) ni con la segunda (el puerto es 443, no 500). Por tanto, cae en la tercera regla (comodín) cuya acción es DISCARD.
+ERRORES: A) No puede ser BYPASS porque no cumple el filtro de puerto de la regla 2. B) No puede ser PROTECT porque no cumple el filtro de protocolo de la regla 1.
+
+PREGUNTA: ¿Qué información NO va contenida en la SAD?
+A) Claves de autenticación (RSA o PSK) usados por IKE.
+B) Modo IPsec Túnel o Transporte.
+C) Contador de número de secuencia de la SA.
+RESPUESTA: A
+EXPLICACION: Las claves RSA o PSK son credenciales de identidad que IKE utiliza para la autenticación mutua antes de establecer la conexión. La SAD solo almacena parámetros de las asociaciones de seguridad (SAs) ya operativas.
+ERRORES: B) El modo de operación es un dato esencial que el kernel debe consultar en la SAD. C) El contador de secuencia para anti-replay debe estar en la SAD para procesar cada paquete.
+
+PREGUNTA: Un router A tiene configurado IPsec para el tráfico que intercambia con los routers B y C. ¿Cuántas SAs hay en la SAD del router A?
+A) 2
+B) 4
+C) 6
+RESPUESTA: B
+EXPLICACION: Las Security Associations (SAs) son unidireccionales. Para una comunicación bidireccional se requieren 2 SAs (una entrante y otra saliente). Al haber dos destinos (B y C), el router A mantiene 4 SAs en total (2 con B y 2 con C).
+ERRORES: A) Solo cubriría la relación bidireccional con un único router. C) El número 6 no se corresponde con la configuración estándar descrita.
+
+PREGUNTA: Si un paquete inbound va protegido por IPsec y no hay entrada en la SAD para ese paquete en el receptor, ¿qué ocurrirá con él?
+A) Se deja pasar a niveles superiores.
+B) Se descarta.
+C) Se lanza IKE para negociar una IPsec SA.
+RESPUESTA: B
+EXPLICACION: Al no haber una SA correspondiente al SPI del paquete entrante, el receptor no puede verificarlo ni descifrarlo. Por seguridad, se elimina inmediatamente.
+ERRORES: A) Los datos no han sido validados o están cifrados, no pueden subir de nivel. C) IKE reactivo se lanza ante tráfico saliente que requiere protección pero no tiene SA, no ante tráfico entrante desconocido.
+
+PREGUNTA: En relación a los modos Túnel y Transporte en IPsec. Indica la sentencia VERDADERA:
+A) El modo transporte se utiliza entre dos gateways para dar acceso a las redes internas.
+B) En el modo túnel la información de la cabecera IP del paquete original no va encriptada.
+C) En el modo transporte no se puede ocultar la cabecera IP original.
+RESPUESTA: C
+EXPLICACION: En modo transporte, la protección se aplica solo a la carga útil (payload) y la cabecera IP original permanece visible para permitir el enrutamiento.
+ERRORES: A) La comunicación entre gateways usa habitualmente el modo Túnel. B) En modo Túnel con ESP, la cabecera IP original sí se cifra y se encapsula dentro de una nueva cabecera IP.
+
+PREGUNTA: Cuando dos equipos tienen configurado IPsec con ESP de modo correcto, ¿cuántas claves simétricas tienen en la SAD cada equipo?
+A) 1
+B) 2
+C) 4
+RESPUESTA: C
+EXPLICACION: Se gestionan 2 SAs (entrada y salida). Cada SA utiliza sus propias claves independientes: una para cifrado y otra para integridad. Por tanto, 2 claves x 2 SAs = 4 claves simétricas por equipo.
+ERRORES: A) Usar una sola clave no permite la independencia de funciones exigida por el estándar. B) Dos claves solo cubrirían o una única SA o solo una función (cifrado o integridad) para ambas.

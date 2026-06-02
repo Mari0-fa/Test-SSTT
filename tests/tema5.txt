@@ -1,0 +1,39 @@
+PREGUNTA: ¿Qué información no ofrece un servidor DHCP?
+A) La máscara de red.
+B) La puerta de enlace.
+C) La dirección IP del DHCP Relay presente en su misma red.
+RESPUESTA: C
+EXPLICACION: Un servidor DHCP entrega parámetros directos al cliente (IP, DNS, etc.). Un DHCP Relay es un agente para reenviar solicitudes entre diferentes subredes. Si el Relay está en la misma red que el servidor, su función es irrelevante y el servidor nunca enviará su IP como parámetro de configuración al cliente.
+ERRORES: A) La máscara de red es un elemento fundamental que el servidor siempre ofrece para delimitar la red y el host. B) La puerta de enlace (Opción 3 de DHCP) se ofrece casi universalmente para que el dispositivo pueda comunicarse fuera de su red local.
+
+PREGUNTA: ¿Qué mensaje DHCP no se envía por broadcast?
+A) Discover
+B) Offer
+C) Request
+RESPUESTA: B
+EXPLICACION: Durante el proceso DORA, el mensaje Offer es emitido por el servidor. El estándar permite que el servidor lo envíe como unicast (capa 2) directamente a la dirección MAC del cliente, ya que la conoce por el mensaje Discover previo. Por descarte teórico, es el único que puede no ser broadcast.
+ERRORES: A) El Discover siempre es broadcast porque el cliente no tiene IP ni conoce la ubicación del servidor. C) El Request es broadcast para notificar a todos los servidores disponibles cuál es la oferta aceptada y que los demás liberen sus reservas temporales.
+
+PREGUNTA: Una transacción de solicitud de IP por DHCP está compuesto de 4 mensajes cuando...
+A) Un cliente accede por primera vez a la red.
+B) Después de que un cliente intente renovar su IP y se le deniegue con un NAK.
+C) Ambas son correctas.
+RESPUESTA: C
+EXPLICACION: El ciclo completo de 4 mensajes (DORA) es obligatorio cuando el dispositivo es nuevo en la red y carece de configuración, o cuando un intento de renovación rápida es rechazado con un DHCPNAK, forzando al cliente a reiniciar todo el proceso.
+ERRORES: A) Es una afirmación cierta, pero incompleta por sí sola. B) También es una afirmación verdadera en la teoría de DHCP, pero la opción integradora es la correcta para este test.
+
+PREGUNTA: ¿Cuál es el cometido del mensaje DHCP Inform?
+A) Es enviado por el servidor DHCP para enviar información extra al cliente.
+B) Es enviado por el cliente DHCP para solicitar información extra a la enviada inicialmente por el servidor.
+C) Es enviado por el servidor DHCP para informar al cliente de que la dirección IP asignada ha caducado.
+RESPUESTA: B
+EXPLICACION: El mensaje DHCPINFORM lo inicia el cliente cuando ya tiene una IP válida pero necesita parámetros adicionales (DNS, servidores NTP, proxy). El servidor responde con un DHCPACK que contiene únicamente las opciones solicitadas.
+ERRORES: A) El mensaje Inform es siempre una solicitud que nace del cliente, el servidor nunca inicia la comunicación con él. C) Para rechazar una solicitud o avisar de una invalidez, el servidor utiliza el mensaje DHCPNAK.
+
+PREGUNTA: ¿Cómo puede un servidor DHCP ofrecer siempre que sea posible la misma IP a un mismo cliente?
+A) Lo hace en base a la MAC del cliente, y es posible incluso cuando DHCP Server y cliente no están en la misma LAN.
+B) Lo hace en base a la MAC del cliente, por lo que solo es posible cuando el DHCP Server y el cliente están en la misma LAN.
+C) Lo hace en base al puerto origen del cliente.
+RESPUESTA: A
+EXPLICACION: Las reservas estáticas se basan en la dirección MAC del cliente. Esto funciona incluso entre subredes distintas gracias al DHCP Relay Agent, que reenvía la solicitud manteniendo la información de la MAC original dentro del paquete DHCP.
+ERRORES: B) Es incorrecto porque el uso de DHCP Relays permite centralizar el servidor en una LAN diferente a la de los clientes. C) El puerto origen (UDP 68) es genérico para todos los clientes y no sirve como identificador único.

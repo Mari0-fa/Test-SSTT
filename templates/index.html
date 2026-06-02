@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turbo Test Pro</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-top">
+                <h1>Turbo Test 🚀</h1>
+                <button id="btn-abandonar" onclick="volverAlMenu()" class="btn-danger" style="display:none;">Volver al Menú</button>
+            </div>
+            <div id="progress-container" style="display:none;">
+                <div id="progress-bar"></div>
+            </div>
+        </header>
+
+        <main id="main-content">
+            <div id="setup-screen" class="card">
+                <h2>Preparar Examen</h2>
+                
+                <div class="form-group">
+                    <label for="test-select">Selecciona un tema:</label>
+                    <select id="test-select" class="select-modern"></select>
+                    <button onclick="iniciarTest()" class="btn-primary" style="width:100%; margin-top:10px;">Estudiar Tema</button>
+                </div>
+
+                <hr style="margin: 25px 0; border: 0; border-top: 1px solid #334155;">
+
+                <div class="form-group">
+                    <label>Simulacro Global (Todos los temas):</label>
+                    <div style="display: flex; gap: 10px; align-items: center; margin-top: 10px;">
+                        <input type="number" id="num-preguntas" value="20" min="1" class="select-modern" style="width: 80px; margin-top:0;">
+                        <button onclick="iniciarSimulacro()" class="btn-primary" style="margin-top:0; flex:1; background: #f59e0b;">Lanzar Simulacro</button>
+                    </div>
+                </div>
+
+                <div class="manual-container" style="margin-top: 25px;">
+                    <details class="manual-details">
+                        <summary class="manual-summary">📖 Manual de Uso y Sistema de Calificación</summary>
+                        <div class="manual-content">
+                            <h3>🛠️ ¿Cómo preparar tus test?</h3>
+                            <p>La aplicación lee dinámicamente los archivos <code>.txt</code> de la carpeta <code>tests/</code> en orden numérico natural. Para añadir material nuevo, basta con subir tu archivo manteniendo la estructura limpia de etiquetas (PREGUNTA, A, B, C, RESPUESTA, EXPLICACION, ERRORES).</p>
+                            
+                            <h3>🔄 Modos de Estudio Disponibles</h3>
+                            <ul>
+                                <li><strong>Estudiar Tema:</strong> Diseñado para el aprendizaje activo y primera toma de contacto. Las preguntas se barajan y las opciones se aleatorizan. Si fallas o dejas en blanco, la app detiene el flujo para mostrarte el análisis detallado y el por qué no de las otras opciones. <span style="color: #f59e0b;">¡Los fallos aquí no restan puntuación!</span></li>
+                                <li><strong>Simulacro Global (Interactivo):</strong> Extrae un bloque de preguntas aleatorias de todos los temas. Funciona igual que el modo estudio, dándote corrección inmediata y explicaciones pregunta a pregunta, pero aplicando la penalización real de examen en la nota final.</li>
+                                <li><strong>Simulacro Global (Examen Real):</strong> Simulación fidedigna de las condiciones del examen oficial de la asignatura SSTT de la FIUM. No hay feedback ni correcciones inmediatas. Permite navegación libre (avanzar y retroceder), marcar opciones, cambiar de opinión o desmarcar una respuesta si no te la quieres jugar. El examen se evalúa al completo únicamente al pulsar <strong>Entregar Examen</strong> al final.</li>
+                            </ul>
+
+                            <h3>📊 Sistema de Penalización y Notas</h3>
+                            <p>Las calificaciones se normalizan automáticamente sobre una escala de 10 puntos siguiendo criterios académicos estrictos:</p>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Modo de Juego</th>
+                                        <th>Acierto</th>
+                                        <th>Fallo</th>
+                                        <th>En Blanco</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Estudiar Tema</strong></td>
+                                        <td style="color: #4ade80;">+1.00</td>
+                                        <td style="color: #94a3b8;">0.00</td>
+                                        <td>—</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Cualquier Simulacro</strong></td>
+                                        <td style="color: #4ade80;">+1.00</td>
+                                        <td style="color: #f87171;">-0.50</td>
+                                        <td style="color: #94a3b8;">0.00</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <blockquote>
+                                <strong>Algoritmo de Examen:</strong> Dos respuestas incorrectas anulan una correcta de manera exacta (resta 0.5 puntos netos por fallo sobre base de ponderación). Las preguntas no contestadas actúan como escudo defensivo: no suman ni restan, pero se computan en el total de preguntas que dividen la nota.
+                            </blockquote>
+                        </div>
+                    </details>
+                </div>
+            </div> <div id="quiz-screen" class="card" style="display:none;">
+                <div class="quiz-header">
+                    <span id="question-number">Pregunta 1/10</span>
+                </div>
+                <h3 id="question-text">Cargando pregunta...</h3>
+                <div id="options-container" class="options-grid"></div>
+                
+                <div id="special-actions-container" style="margin-top: 15px;"></div>
+                
+                <div id="feedback" class="feedback-area" style="display:none;"></div>
+            </div>
+
+            <div id="result-screen" class="card" style="display:none;">
+                <h2>Resultado Final</h2>
+                <div class="score-circle">
+                    <span id="final-score">0.0</span>
+                </div>
+                <p id="final-stats"></p>
+                <button onclick="location.reload()" class="btn-secondary">Volver al Inicio</button>
+            </div>
+
+            <div id="mode-modal" class="modal-overlay" style="display:none;">
+                <div class="mode-card">
+                    <h2 style="margin-top:0; color: #f8fafc; font-size: 1.3rem;">Elige la modalidad del Simulacro</h2>
+                    
+                    <div class="mode-option" onclick="seleccionarModoSimulacro('interactivo')" style="cursor:pointer; padding:15px; border:1px solid #334155; border-radius:8px; margin-bottom:15px; background: #0f172a; transition: background 0.2s;">
+                        <strong style="color:#f59e0b; display: block; margin-bottom: 4px;">🔸 Modo Interactivo</strong>
+                        <p style="font-size:0.85rem; margin:0; color:#94a3b8; line-height: 1.4;">Ideal para entrenar de forma ágil: ves si aciertas o fallas al momento con el desglose explicativo en cada pregunta.</p>
+                    </div>
+
+                    <div class="mode-option" onclick="seleccionarModoSimulacro('examen')" style="cursor:pointer; padding:15px; border:1px solid #334155; border-radius:8px; background: #0f172a; transition: background 0.2s;">
+                        <strong style="color:#38bdf8; display: block; margin-bottom: 4px;">🔹 Modo Examen Real</strong>
+                        <p style="font-size:0.85rem; margin:0; color:#94a3b8; line-height: 1.4;">Sin pistas ni correcciones inmediatas. Te permite avanzar, retroceder, cambiar tus respuestas o desmarcarlas. Todo se calcula al entregar.</p>
+                    </div>
+                    
+                    <button onclick="document.getElementById('mode-modal').style.display='none'" class="btn-secondary" style="width:100%; margin-top:15px; background:transparent; border:none; color:#64748b; cursor:pointer;">Cancelar</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

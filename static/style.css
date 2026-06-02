@@ -1,0 +1,297 @@
+:root {
+    --bg-color: #0f172a;
+    --card-bg: #1e293b;
+    --accent: #38bdf8;
+    --success: #22c55e;
+    --error: #ef4444;
+    --text: #f1f5f9;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container { width: 100%; max-width: 600px; padding: 20px; }
+
+.card {
+    background: var(--card-bg);
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    text-align: center;
+    animation: fadeIn 0.4s ease-out;
+}
+
+.options-grid {
+    display: grid;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.btn-option {
+    background: #334155;
+    color: white;
+    border: 2px solid transparent;
+    padding: 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+    font-size: 1rem;
+}
+
+.btn-option:hover { background: #475569; border-color: var(--accent); }
+.btn-option.correct { background: var(--success); border-color: var(--success); }
+.btn-option.wrong { background: var(--error); border-color: var(--error); }
+
+.btn-primary {
+    background: var(--accent);
+    color: var(--bg-color);
+    border: none;
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+#progress-container {
+    background: #334155;
+    height: 8px;
+    border-radius: 4px;
+    margin: 20px 0;
+    overflow: hidden;
+}
+
+#progress-bar {
+    background: var(--accent);
+    height: 100%;
+    width: 0%;
+    transition: width 0.3s;
+}
+
+.feedback-area {
+    margin-top: 25px;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: left;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    animation: fadeIn 0.3s ease-in;
+}
+
+.feedback-success { background: rgba(34, 197, 94, 0.1); border: 1px solid var(--success); }
+.feedback-error { background: rgba(239, 68, 68, 0.1); border: 1px solid var(--error); }
+
+.feedback-area h4 { margin-top: 0; color: var(--accent); }
+.error-list { color: #94a3b8; font-style: italic; margin-top: 10px; display: block; }
+
+.btn-next {
+    display: block;
+    width: 100%;
+    margin-top: 20px;
+    padding: 12px;
+    background: var(--accent);
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.form-group {
+    margin: 20px 0;
+    text-align: left;
+}
+
+.select-modern {
+    width: 100%;
+    padding: 12px;
+    background: #334155;
+    color: white;
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    margin-top: 10px;
+    font-size: 1rem;
+    outline: none;
+}
+
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn-danger {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+}
+.btn-danger:hover { background: #dc2626; }
+
+.btn-blank {
+    width: 100%;
+    background: #475569;
+    color: #cbd5e1;
+    border: 1px dashed #64748b;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
+    transition: all 0.2s;
+}
+.btn-blank:hover { background: #334155; color: white; border-color: var(--accent); }
+
+/* Estilos para el Manual Desplegable */
+.manual-container {
+    border-top: 1px dashed #334155;
+    padding-top: 15px;
+}
+
+.manual-details {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.manual-summary {
+    padding: 12px 15px;
+    font-weight: bold;
+    color: #38bdf8;
+    cursor: pointer;
+    list-style: none; /* Oculta la flecha nativa en algunos navegadores */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+}
+
+.manual-summary::-webkit-details-marker {
+    display: none; /* Oculta la flecha en Safari/Chrome */
+}
+
+.manual-summary::after {
+    content: "▼";
+    font-size: 0.8rem;
+    color: #64748b;
+    transition: transform 0.2s;
+}
+
+.manual-details[open] .manual-summary::after {
+    transform: rotate(180deg);
+}
+
+.manual-content {
+    padding: 15px;
+    border-top: 1px solid #334155;
+    background: #0f172a;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: #cbd5e1;
+}
+
+.manual-content h3 {
+    color: #f59e0b;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-size: 1rem;
+}
+
+.manual-content ul {
+    margin-left: 20px;
+    margin-bottom: 15px;
+}
+
+.manual-content code {
+    background: #1e293b;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #e2e8f0;
+    font-family: monospace;
+}
+
+/* Tabla del manual */
+.manual-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 15px 0;
+    font-size: 0.85rem;
+}
+
+.manual-content th, .manual-content td {
+    border: 1px solid #334155;
+    padding: 8px;
+    text-align: center;
+}
+
+.manual-content th {
+    background: #1e293b;
+    color: #94a3b8;
+}
+
+/* Botones de navegación del examen */
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    gap: 10px;
+}
+
+.btn-nav {
+    flex: 1;
+    background: #334155;
+    color: white;
+    border: 1px solid #475569;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn-nav:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.btn-entrega {
+    background: #10b981 !important; /* Verde esmeralda */
+    color: white;
+    font-weight: bold;
+}
+
+/* Estado seleccionado en modo Real */
+.btn-option.selected {
+    border: 2px solid #38bdf8;
+    background: #1e293b;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+}
+
+/* Modal de elección de modo */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1000;
+}
+.mode-card {
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 12px;
+    max-width: 500px;
+    width: 90%;
+    border: 1px solid #334155;
+}
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
